@@ -1,10 +1,19 @@
+
 <div class="container">
-  <div class="row" *ngFor="let post of posts">
-    <div class="card card-block">
-      <h4 class="card-title">{{ post.title }}</h4>
-      <p class="card-text">{{post.body}}</p>
-      <a href="#" class="card-link">Card link</a>
-      <a href="#" class="card-link">Another link</a>
-    </div>
-  </div>
+
+      	<input (keyup)="onKey($event)">
+</div>
+
+
+<div>
+<div style="display: block">
+  <canvas baseChart
+          [datasets]="radarChartData"
+          [labels]="radarChartLabels"
+          [chartType]="radarChartType"
+          [legend]="false"
+          (chartHover)="chartHovered($event)"
+          (chartClick)="chartClicked($event)" id="chart"></canvas>
+</div>
+  <button (click)="randomize()">Update</button>
 </div>

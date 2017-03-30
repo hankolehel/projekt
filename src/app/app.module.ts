@@ -10,6 +10,7 @@ import { PostsService } from './posts.service';
 
 import { DataCollectionComponent } from './datacollection/datacollection.component';
 import { DataCollectionService } from './datacollection.service';
+import { ChartsModule } from 'ng2-charts';
 
 // Define the routes
 const ROUTES = [
@@ -38,6 +39,7 @@ const ROUTES = [
     BrowserModule,
     FormsModule,
     HttpModule,
+    ChartsModule,
     RouterModule.forRoot(ROUTES)
   ],
   providers: [PostsService, DataCollectionService],
