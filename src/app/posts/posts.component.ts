@@ -10,7 +10,51 @@ export class PostsComponent implements OnInit {
   // instantiate posts to an empty array
   posts: any = [];
 
- public radarChartLabels:string[] = ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running', 'Eating', 'Drinking', 'Eating', 'Drinking'];
+ // PolarArea
+  public polarAreaChartLabels:string[] = ['A','B','C','D','E','F','G','H', 'I'];
+  public polarAreaChartData:number[] = [100, 80, 110, 20, 20, 20, 20, 20, 20];
+  public polarAreaLegend:boolean = true;
+
+  public polarAreaChartType:string = 'polarArea';
+
+  public polarChartOptions:any = {
+      scale:{
+        ticks: {
+                autoSkip: true,
+                maxTicksLimit: 20
+            }
+      },
+      legend: false,
+      startAngle: -0.25 * Math.PI
+    };
+
+  // events
+  public chartClicked(e:any):void {
+    console.log(e);
+  }
+
+  public chartHovered(e:any):void {
+    console.log(e);
+  }
+   public fillInDistanceArray(value1:number,value2:number,value3:number){
+        var clone :number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        clone[0] = value1;
+        clone[1] = value2;
+        clone[2] = value3;
+        this.polarAreaChartData = clone;
+   }
+
+
+   public randomize():void{
+      var a:number = Math.round(Math.random() * 100);
+      var b:number = Math.round(Math.random() * 100);
+      var c:number = Math.round(Math.random() * 100);
+      this.fillInDistanceArray( a,b,c );
+//var target = document.getElementById('chart');
+//console.log(target);
+   }
+
+ /*public radarChartLabels:string[] = ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running', 'Eating', 'Drinking', 'Eating', 'Drinking'];
 
    public radarChartData:any = [
      {data: [80, 80, 0, 0, 0, 0, 0, 0, 0, 0, 80], label: 'Left'},
@@ -64,7 +108,7 @@ export class PostsComponent implements OnInit {
 
    public chartHovered(e:any):void {
      console.log(e);
-   }
+   }*/
 
   constructor(private postsService: PostsService) { }
 
@@ -73,8 +117,6 @@ export class PostsComponent implements OnInit {
     this.postsService.getAllPosts().subscribe(posts => {
       this.posts = posts;
     });
-
-
 
   }
 }

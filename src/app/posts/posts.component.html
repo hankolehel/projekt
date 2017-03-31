@@ -1,19 +1,15 @@
 
-<div class="container">
-
-      	<input (keyup)="onKey($event)">
-</div>
-
-
 <div>
-<div style="display: block">
-  <canvas baseChart
-          [datasets]="radarChartData"
-          [labels]="radarChartLabels"
-          [chartType]="radarChartType"
-          [legend]="false"
-          (chartHover)="chartHovered($event)"
-          (chartClick)="chartClicked($event)" id="chart"></canvas>
-</div>
+
+  <div style="display: block">
+    <canvas baseChart
+            [data]="polarAreaChartData"
+            [labels]="polarAreaChartLabels"
+            [legend]="polarAreaLegend"
+            [options]="polarChartOptions"
+            [chartType]="polarAreaChartType"
+            (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)" id="chart"></canvas>
+  </div>
   <button (click)="randomize()">Update</button>
 </div>
