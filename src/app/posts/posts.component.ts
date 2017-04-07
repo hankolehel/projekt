@@ -9,33 +9,50 @@ import { PostsService } from '../posts.service';
 export class PostsComponent implements OnInit {
   // instantiate posts to an empty array
   posts: any = [];
+  fullImagePath = '/assets/upview.png';
 
- public radarChartLabels:string[] = ['Eating', 'Drinking', 'Sleeping', 'Designing', 'Coding', 'Cycling', 'Running', 'Eating', 'Drinking', 'Eating', 'Drinking'];
+ public radarChartLabels:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
    public radarChartData:any = [
-     {data: [80, 80, 0, 0, 0, 0, 0, 0, 0, 0, 80], label: 'Left'},
-     {data: [0, 0, 0, 0, 0, 0, 0, 0, 60, 60, 60], label: 'Middle'},
-     {data: [0, 30, 30, 30, 0, 0, 0, 0, 0, 0, 0], label: 'Right'}
+     {data: [80, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80], label: 'Left'},
+     {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 60, 60], label: 'Middle'},
+     {data: [0, 30, 30, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Right'}
 
    ];
    public radarChartType:string = 'radar';
 
-   // events
+  public radarChartOptions:any = {
+      responsive: true,
+      scale: {
+              ticks: {
+                  min: 0,
+                  max: 100,
+                  display: false
+              },
+              display: false
+          }
+    };
+
+   /* events
    public chartClicked(e:any):void {
      console.log(e);
-   }
+     var chartComponent = document.getElementById('chart'); //ng2-chart object
+     console.log(chartComponent);
+         //var chart = chartComponent.chart; //Internal chart.js chart object
+         //console.log(chart.datasets[0].points.indexOf(e.activePoints[0]));
+   }*/
 
    public fillInDistanceArray(value:number, direction:string){
       var aux = Array<number>(10).fill(0);
       if (direction =="left"){
         aux[0] = value;
         aux[1] = value;
-        aux[10] = value;
+        aux[13] = value;
       }else{
         if (direction =="middle"){
-          aux[8] = value;
-          aux[9] = value;
-          aux[10] = value;
+          aux[11] = value;
+          aux[12] = value;
+          aux[13] = value;
         }else{
           if (direction =="right"){
             aux[1] = value;
@@ -66,10 +83,12 @@ export class PostsComponent implements OnInit {
      console.log(e);
    }
 
-  constructor(private postsService: PostsService) { }
+  constructor(private postsService: PostsService) {
+
+
+  }
 
   ngOnInit() {
-    // Retrieve posts from the API
     this.postsService.getAllPosts().subscribe(posts => {
       this.posts = posts;
     });

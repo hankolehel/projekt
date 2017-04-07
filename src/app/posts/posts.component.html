@@ -1,19 +1,20 @@
 
-<div class="container">
+<div class="row" md-content layout-padding>
+  <div style="display: block">
+    <canvas baseChart
+            [datasets]="radarChartData"
+            [labels]="radarChartLabels"
+            [chartType]="radarChartType"
+            [options]="radarChartOptions"
+            [legend]="false"
+            (chartHover)="chartHovered($event)"
+            (chartClick)="chartClicked($event)" id="chart"></canvas>
+  </div>
+    <button (click)="randomize()">Update</button>
 
-      	<input (keyup)="onKey($event)">
-</div>
-
-
-<div>
-<div style="display: block">
-  <canvas baseChart
-          [datasets]="radarChartData"
-          [labels]="radarChartLabels"
-          [chartType]="radarChartType"
-          [legend]="false"
-          (chartHover)="chartHovered($event)"
-          (chartClick)="chartClicked($event)" id="chart"></canvas>
-</div>
-  <button (click)="randomize()">Update</button>
+    <div>
+      <div class="col-xs-12">
+        <img [src]="fullImagePath" ng-style="{ width : 200, height : 300 }">
+      </div>
+    </div>
 </div>
