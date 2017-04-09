@@ -17,15 +17,18 @@ export class PostsComponent implements OnInit {
 
   public polarAreaChartType:string = 'polarArea';
 
-  public polarChartOptions:any = {
-      scale:{
-        ticks: {
-                autoSkip: true,
-                maxTicksLimit: 20
-            }
-      },
-      legend: false,
-      startAngle: -0.25 * Math.PI
+  public polarChartOptions = {
+           startAngle : 1.3 * Math.PI,
+           responsive: true,
+            scale: {
+                    ticks: {
+                        min: 0,
+                        max: 100,
+                        display: true
+                    },
+                    display: true
+                },
+      legend: false
     };
 
   // events
