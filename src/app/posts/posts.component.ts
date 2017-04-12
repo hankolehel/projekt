@@ -8,14 +8,13 @@ import { PostsService } from '../posts.service';
 })
 export class PostsComponent implements OnInit {
   // instantiate posts to an empty array
-  posts: any = [];
   fullImagePath = '/assets/upview.png';
 
  public radarChartLabels:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
    public radarChartData:any = [
-     {data: [80, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80], label: 'Left'},
-     {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 60, 60], label: 'Middle'},
+     {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 60, 60], label: 'Left'},
+     {data: [80, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80], label: 'Middle'},
      {data: [0, 30, 30, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Right'}
 
    ];
@@ -33,26 +32,17 @@ export class PostsComponent implements OnInit {
           }
     };
 
-   /* events
-   public chartClicked(e:any):void {
-     console.log(e);
-     var chartComponent = document.getElementById('chart'); //ng2-chart object
-     console.log(chartComponent);
-         //var chart = chartComponent.chart; //Internal chart.js chart object
-         //console.log(chart.datasets[0].points.indexOf(e.activePoints[0]));
-   }*/
-
    public fillInDistanceArray(value:number, direction:string){
       var aux = Array<number>(10).fill(0);
       if (direction =="left"){
-        aux[0] = value;
-        aux[1] = value;
-        aux[13] = value;
-      }else{
-        if (direction =="middle"){
           aux[11] = value;
           aux[12] = value;
           aux[13] = value;
+      }else{
+        if (direction =="center"){
+            aux[0] = value;
+            aux[1] = value;
+            aux[13] = value;
         }else{
           if (direction =="right"){
             aux[1] = value;
@@ -74,9 +64,16 @@ export class PostsComponent implements OnInit {
    }
 
    public randomize():void{
-      this.rebuildChart(this.fillInDistanceArray( Math.round(Math.random() * 100), "left"),
+       this.postsService.getCurrentData().subscribe(posts => {
+        console.log(posts);
+         this.rebuildChart(this.fillInDistanceArray( posts.left, "left"),
+                             this.fillInDistanceArray( posts.center, "center"),
+                               this.fillInDistanceArray( posts.right, "right"));
+       });
+
+      /*this.rebuildChart(this.fillInDistanceArray( Math.round(Math.random() * 100), "left"),
                     this.fillInDistanceArray( Math.round(Math.random() * 100), "middle"),
-                      this.fillInDistanceArray( Math.round(Math.random() * 100), "right"));
+                      this.fillInDistanceArray( Math.round(Math.random() * 100), "right"));*/
    }
 
    public chartHovered(e:any):void {
@@ -84,16 +81,15 @@ export class PostsComponent implements OnInit {
    }
 
   constructor(private postsService: PostsService) {
-
-
+    setInterval(()=>this.randomize(), 100)
   }
 
+
+
   ngOnInit() {
-    this.postsService.getAllPosts().subscribe(posts => {
+/*    this.postsService.getAllPosts().subscribe(posts => {
       this.posts = posts;
     });
-
-
-
+*/
   }
 }

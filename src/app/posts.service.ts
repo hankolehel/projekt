@@ -13,4 +13,10 @@ export class PostsService {
     return this.http.get('/api/posts')
       .map(res => res.json());
   }
+
+  getCurrentData() {
+      return this.http.get('/api/collect')
+        .map(res => res.json());
+    }
+
 }
