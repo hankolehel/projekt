@@ -7,9 +7,16 @@ export class PostsService {
 
   constructor(private http: Http) { }
 
+
   // Get all posts from the API
   getAllPosts() {
     return this.http.get('/api/posts')
       .map(res => res.json());
   }
+
+  getCurrentData() {
+      return this.http.get('/api/collect')
+        .map(res => res.json());
+    }
+
 }

@@ -7,6 +7,11 @@ import { AppComponent }   from './app.component';
 import { PostsComponent } from './posts/posts.component';
 import { FormsModule }    from '@angular/forms';
 import { PostsService } from './posts.service';
+/*
+import { DataCollectionComponent } from './datacollection/datacollection.component';
+import { DataCollectionService } from './datacollection.service';
+*/
+import { ChartsModule } from 'ng2-charts';
 
 // Define the routes
 const ROUTES = [
@@ -18,21 +23,27 @@ const ROUTES = [
   {
     path: 'posts',
     component: PostsComponent
-  }
+  }/*,
+  {
+    path: 'data',
+    component: DataCollectionComponent
+  }*/
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
     PostsComponent
+    /*DataCollectionComponent*/
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
+    ChartsModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [PostsService],
+  providers: [PostsService, /*DataCollectionService*/],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
