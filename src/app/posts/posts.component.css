@@ -1,0 +1,41 @@
+div.box {
+  position:absolute;
+  background: #EEE;
+  height: 1000px;
+  width: 100%;
+}
+
+div.chartAndCarDiv {
+  height: 100%;
+  width: 100%;
+}
+
+div.rightSide {
+  position:absolute;
+  background: #400;
+  height: 100%;
+  right: 0;
+  width: 20%;
+  }
+
+
+div.leftSide {
+  position:absolute;
+  background: #200;
+  height: 100%;
+  float: left;
+  width: 20%;
+}
+
+div.chartDiv {
+  display: block;
+}
+
+
+img.carModelPicture{
+position: absolute;
+left: 45%;
+top: 46%;
+width: 150px;
+height: auto;
+}

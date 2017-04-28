@@ -1,20 +1,21 @@
-
-<div class="row" md-content layout-padding>
-  <div style="display: block">
-    <canvas baseChart
-            [datasets]="radarChartData"
-            [labels]="radarChartLabels"
-            [chartType]="radarChartType"
-            [options]="radarChartOptions"
-            [legend]="false"
-            (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)" id="chart"></canvas>
-  </div>
-    <button (click)="randomize()">Update</button>
-
-    <div>
-      <div class="col-xs-12">
-        <img [src]="fullImagePath" ng-style="{ width : 200, height : 300 }">
+<div>
+      <div class="box">
+        <div class="chartAndCarDiv">
+          <div class="chartDiv">
+            <canvas baseChart
+                    [datasets]="radarChartData"
+                    [labels]="radarChartLabels"
+                    [chartType]="radarChartType"
+                    [options]="radarChartOptions"
+                    [legend]="false"
+                    (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)" id="chart"></canvas>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <img [src]="fullImagePath" class = "carModelPicture">
+      <div class="rightSide">2nd</div>
+      <div class="leftSide">3rd</div>
+
 </div>

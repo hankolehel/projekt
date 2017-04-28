@@ -8,7 +8,7 @@ import { PostsService } from '../posts.service';
 })
 export class PostsComponent implements OnInit {
   // instantiate posts to an empty array
-  fullImagePath = '/assets/upview.png';
+  fullImagePath = '/assets/upviewsimple.png';
 
  public radarChartLabels:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
@@ -26,7 +26,7 @@ export class PostsComponent implements OnInit {
               ticks: {
                   min: 0,
                   max: 100,
-                  display: false
+                  display: true
               },
               display: false
           }
