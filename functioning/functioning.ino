@@ -10,9 +10,13 @@ unsigned char value;
 int timerNumberCount;
 double tavolsag[] = {0, 0, 0};
 
-int echo[4] = {16, 4, 14};
-int trigger[4] = {5, 0, 12};
+//int echo[4] = {16, 4, 14};
+//int trigger[4] = {5, 0, 12};
 
+
+int echo[4] = {4, 14, 16};
+int trigger[4] = {0, 12, 5};
+s
 int control [4] = {0, 0, 0};
 int measurementSave [4] = {0, 0, 0};
 
@@ -78,6 +82,11 @@ void send_data(int left, int center, int right){
 }
 
 void setup() {
+
+  pinMode(13, OUTPUT);//trigger
+  pinMode(15, OUTPUT);//trigger
+  
+  
   pinMode(trigger[0],OUTPUT);//trigger
   pinMode(echo[0],INPUT); //echo 
   pinMode(trigger[1],OUTPUT);//trigger
@@ -154,7 +163,8 @@ bool disregard_invalid_data(){
   return disregard;
 }
 
-void loop() {
+  void loop() {
+
     read_sensors();
     bool disregard = disregard_invalid_data();
     if (!disregard){
