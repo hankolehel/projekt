@@ -4,10 +4,17 @@
 const char* ssid     = "madar";
 const char* password = "nyiccsdkianyad";
 int characterCount;
+String url;
+
+volatile int left_a;volatile int left_b;volatile int left;
+
+volatile int center_a;volatile int center_b;volatile int center;
+
+volatile int right_a;volatile int right_b;volatile int right;
 
 WiFiClient client;
 
-const char server[] = "192.168.1.24";
+const char server[] = "192.168.0.102";
 
 void setup() {
   Serial.println("Attempting to connect to wifi");
@@ -49,7 +56,7 @@ void send_data(String url) {
         //String url = "/api/store?left=" + String(left) + "&center=" + String(center) + "&right=" + String(right) + "";
         
         client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-                     "Host:  192.168.1.24\r\n" +
+                     "Host:  192.168.0.102\r\n" +
                      "Connection: close\r\n\r\n");
 
         /*Serial.println("SENT");
@@ -70,17 +77,32 @@ void send_data(String url) {
 }
 
 void loop() {  
-    Wire.requestFrom(8, 6);    // request 6 bytes from slave device #8
-  char message[50]= "";
-  characterCount = 0;
   
-  while (Wire.available()) { // slave may send less than requested
-    message[characterCount] = Wire.read(); // receive a byte as character
-    characterCount += 1;
-  }
-  String messageString(message);
-  Serial.print("Received message :" + messageString);
+  // ~~ START Inquire value from SlaveID#11 ~~ //
+  Wire.requestFrom(11, 6);
+  while (Wire.available())
+  {
+    left_a = Wire.read(); 
+    left_b = Wire.read();
+    left = (left_b << 8) | left_a;
+    Serial.print("left:"); Serial.print(left);
 
-  send_data(messageString);
+    center_a = Wire.read(); 
+    center_b = Wire.read();
+    center = (center_b << 8) | center_a;
+    Serial.print("center:"); Serial.print(center);
+
+    right_a = Wire.read(); 
+    right_b = Wire.read();
+    right = (right_b << 8) | right_a;
+    Serial.print("right:"); Serial.print(right);
+    Serial.println("");
+  }
+
+  url = "/api/store?left=" + String(left) + "&center=" + String(center) + "&right=" + String(right) + "";
+
+  send_data(url);
+  delay(200);
+
   
 }
