@@ -106,13 +106,13 @@ bool disregard_invalid_data() {
   bool disregard = false;
   int i;
   for (i = 0; i < 3; i++) {
-    if (tavolsag[i] < 200) {
-      if ( abs(tavolsag[i] - distance_average[i]) > 100 ) {
+    if (tavolsag[i] < 250) {
+      if ( abs(tavolsag[i] - distance_average[i]) > 150 ) {
         disregard = true;
       }
-      distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
+      distance_average[i] = tavolsag[i];// (distance_average[i] + tavolsag[i]) / 2;
     } else {
-      tavolsag[i] = 100;
+      tavolsag[i] = 250;
     }
   }
   return disregard;
@@ -225,7 +225,7 @@ void loop() {
   } else {
     Serial.println("DISREGARDED DATA");
   }
-  delay(200);
+  delay(150);
 //digitalWrite(5, LOW);
 //for (int i = 0; i< 255; i+=30){
 //  analogWrite(6,220);

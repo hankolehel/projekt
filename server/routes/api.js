@@ -52,7 +52,7 @@ router.get('/store', (req, res) => {
     readings.right = param.right
 	}
   console.log(readings);
-  res.status(200).send("OK");
+  res.status(200).send("MESSAGE");
 });
 
 // Get all posts

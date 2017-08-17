@@ -1,9 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <Wire.h>
-const char* ssid     = "madar";
-const char* password = "nyiccsdkianyad";
-int characterCount;
+const char* ssid     = "DIGI-6D5M";
+const char* password = "exx257Cr";
 String url;
 
 volatile int left_a;volatile int left_b;volatile int left;
@@ -14,14 +13,13 @@ volatile int right_a;volatile int right_b;volatile int right;
 
 WiFiClient client;
 
-const char server[] = "192.168.0.102";
+char *server = "192.168.100.2";
 
 void setup() {
   Serial.println("Attempting to connect to wifi");
   connect_to_wifi();
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-
+  client.setTimeout(150);
+  
   Wire.begin();        // join i2c bus (address optional for master)
 
   // give the Ethernet shield a second to initialize:
@@ -46,28 +44,29 @@ void connect_to_wifi() {
 
   Serial.println("");
   Serial.println("WiFi connected");
-
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void send_data(String url) {
   if (client.connect(server, 3000)) {
     if (client) {
-      while (client.connected()) {
-        //String url = "/api/store?left=" + String(left) + "&center=" + String(center) + "&right=" + String(right) + "";
+      if (client.connected()) {
         
         client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-                     "Host:  192.168.0.102\r\n" +
+                     "Host:  "+String(server)+"\r\n" +
                      "Connection: close\r\n\r\n");
 
-        /*Serial.println("SENT");
-          Serial.println("Response:");
+          //Serial.print("Response:");
 
-          while(client.available()){
+        /*  while(client.available()){
           String line = client.readStringUntil('\r');
-          Serial.print(line);
+            if (line.equals("\n")){
+              line = client.readStringUntil('\r');  
+              Serial.println(line);
+            }
           }*/
         //delay(80);
-        break;
       }
     }
   } else {
@@ -79,6 +78,7 @@ void send_data(String url) {
 void loop() {  
   
   // ~~ START Inquire value from SlaveID#11 ~~ //
+  Serial.println("Starting request");
   Wire.requestFrom(11, 6);
   while (Wire.available())
   {
@@ -98,11 +98,11 @@ void loop() {
     Serial.print("right:"); Serial.print(right);
     Serial.println("");
   }
-
   url = "/api/store?left=" + String(left) + "&center=" + String(center) + "&right=" + String(right) + "";
 
   send_data(url);
-  delay(200);
+  
+  delay(100);
 
   
 }

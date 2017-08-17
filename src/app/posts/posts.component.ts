@@ -25,10 +25,10 @@ export class PostsComponent implements OnInit {
       scale: {
               ticks: {
                   min: 0,
-                  max: 100,
+                  max: 70,
                   display: true
               },
-              display: false
+              display: true
           }
     };
 
