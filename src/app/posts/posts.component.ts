@@ -8,7 +8,8 @@ import { PostsService } from '../posts.service';
 })
 export class PostsComponent implements OnInit {
   // instantiate posts to an empty array
-  fullImagePath = '/assets/upviewsimple.png';
+  fullImagePath = '/assets/newcar.png';
+  boxPath = '/assets/box.png'
 
  public radarChartLabels:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
