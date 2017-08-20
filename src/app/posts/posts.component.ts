@@ -13,6 +13,7 @@ export class PostsComponent implements OnInit {
   carWorkingToggle : boolean = false;
 
  public radarChartLabels:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+ public distances:any = [60,80,30];
 
    public radarChartData:any = [
      {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 60, 60], label: 'Left'},
@@ -68,6 +69,10 @@ export class PostsComponent implements OnInit {
    public collectStoredData(carWorkingToggle?: boolean):void{               //also sends commands to the server (car's on/off state), this gets separated at service level
               this.postsService.getCurrentData(carWorkingToggle).subscribe(posts => {
                console.log(posts);
+               this.distances[0] = posts.left;
+               this.distances[1] = posts.center;
+               this.distances[2] = posts.right;
+
                 this.rebuildChart(this.fillInDistanceArray( posts.left, "left"),
                                     this.fillInDistanceArray( posts.center, "center"),
                                       this.fillInDistanceArray( posts.right, "right"));

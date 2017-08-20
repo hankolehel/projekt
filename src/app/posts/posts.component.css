@@ -78,6 +78,16 @@ label.sensorLabel{
     top:80%;
 }
 
+label.distanceLabel{
+position:absolute;
+float:right;
+left:60%;
+top:35%;
+color: #666666 ;
+font : 4em "typewriter", sans-serif;
+text-shadow: 2px 1px grey;
+}
+
 .switch {
   position: relative;
   display: inline-block;
