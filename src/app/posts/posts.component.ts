@@ -9,7 +9,8 @@ import { PostsService } from '../posts.service';
 export class PostsComponent implements OnInit {
   // instantiate posts to an empty array
   fullImagePath = '/assets/newcar.png';
-  boxPath = '/assets/box.png'
+  boxPath = '/assets/box.png';
+  carWorkingToggle : boolean = false;
 
  public radarChartLabels:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
 
@@ -64,28 +65,24 @@ export class PostsComponent implements OnInit {
          this.radarChartData = clone;
    }
 
-   public randomize():void{
-       this.postsService.getCurrentData().subscribe(posts => {
-        console.log(posts);
-         this.rebuildChart(this.fillInDistanceArray( posts.left, "left"),
-                             this.fillInDistanceArray( posts.center, "center"),
-                               this.fillInDistanceArray( posts.right, "right"));
-       });
+   public collectStoredData(carWorkingToggle?: boolean):void{               //also sends commands to the server (car's on/off state), this gets separated at service level
+              this.postsService.getCurrentData(carWorkingToggle).subscribe(posts => {
+               console.log(posts);
+                this.rebuildChart(this.fillInDistanceArray( posts.left, "left"),
+                                    this.fillInDistanceArray( posts.center, "center"),
+                                      this.fillInDistanceArray( posts.right, "right"));
+              });
 
-      /*this.rebuildChart(this.fillInDistanceArray( Math.round(Math.random() * 100), "left"),
-                    this.fillInDistanceArray( Math.round(Math.random() * 100), "middle"),
-                      this.fillInDistanceArray( Math.round(Math.random() * 100), "right"));*/
-   }
-
-   public chartHovered(e:any):void {
-     console.log(e);
    }
 
   constructor(private postsService: PostsService) {
-    setInterval(()=>this.randomize(), 100)
+    setInterval(()=>this.collectStoredData(), 100)
   }
 
-
+   public toggleCarAction():void{
+       this.carWorkingToggle = !this.carWorkingToggle;
+       this.collectStoredData(this.carWorkingToggle);
+   }
 
   ngOnInit() {
 /*    this.postsService.getAllPosts().subscribe(posts => {

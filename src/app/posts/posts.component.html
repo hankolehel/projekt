@@ -35,7 +35,7 @@
       <div class="sliderOnText"><label style="font-size:20px;">ON</label></div>
       <div class="sliderOffText"><label style="font-size:20px;">OFF</label></div>
       <label class="switch">
-        <input type="checkbox">
+        <input type="checkbox" [(ngModel)]="isCarWorking" (click)="toggleCarAction()">
         <span class="slider round"></span>
       </label>
     </div>

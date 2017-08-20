@@ -16,6 +16,10 @@ var readings = {
     "center": 60,
     "right": 90,
 }
+var url_parts;
+var param;
+var activeState = "stop";
+var activeStateSave = "stop";
 
 // Get all posts
 router.get('/posts', (req, res) => {
@@ -30,15 +34,7 @@ router.get('/posts', (req, res) => {
     });
 });
 
-router.get('/store', (req, res) => {
- /* readings.left = req.body.left
-  readings.center = req.body.center
-  readings.right = req.body.right
-  console.log(req);
-  //console.log("Received measurement: ");
-  console.log("Left:"+readings.left +" Center:"+ readings.center +" Right:"+ readings.right);
-*/
-
+router.get('/store', (req, res) => {              //stores the incoming readings from the arduino
   var url_parts = url.parse(req.url, true);
 	var param = url_parts.query;
 
@@ -52,12 +48,23 @@ router.get('/store', (req, res) => {
     readings.right = param.right
 	}
   console.log(readings);
-  res.status(200).send("MESSAGE");
+  if (this.activeStateSave != this.activeState){
+    this.activeStateSave = this.activeState
+    res.status(200).send(this.activeState);
+  }else{
+    res.status(200).send("");
+  }
 });
 
 // Get all posts
-router.get('/collect', (req, res) => {
-  //console.log(readings);
+router.get('/collect', (req, res) => {            //sends the readings back to the frontend
+  if (Object.keys(req.query).length !== 0){
+    if (req.query['carState']=='true'){
+      this.activeState = 'work';
+    }else{
+      this.activeState = 'stop';
+    }
+  }
   process.stdout.write(".");
   res.status(200).send(readings);
 });

@@ -48,6 +48,20 @@ void connect_to_wifi() {
   Serial.println(WiFi.localIP());
 }
 
+void sendMessageToArduino(String message){
+  byte x;
+  if (message.equals("work"))            //if we got the command to work, we send a 0
+      x = 0;             
+  else
+    if (message.equals("stop"))          //if we got a command to stop, we send a 1
+      x = 1;
+    
+  
+  Wire.beginTransmission(11); // transmit to device #11
+  Wire.write(x);              // sends one byte
+  Wire.endTransmission();    // stop transmitting
+}
+
 void send_data(String url) {
   if (client.connect(server, 3000)) {
     if (client) {
@@ -59,13 +73,16 @@ void send_data(String url) {
 
           //Serial.print("Response:");
 
-        /*  while(client.available()){
+          while(client.available()){
           String line = client.readStringUntil('\r');
             if (line.equals("\n")){
-              line = client.readStringUntil('\r');  
-              Serial.println(line);
+              line = client.readStringUntil('\r');              
+              line.trim();
+              if (line.equals("work") || line.equals("stop")){
+                sendMessageToArduino(line); 
+              }
             }
-          }*/
+          }
         //delay(80);
       }
     }

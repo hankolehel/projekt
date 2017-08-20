@@ -15,6 +15,8 @@ int trigger_common = 7;
 int echo_common = 8;
 char url[50];
 int distance_average[4] = {0, 0, 0};
+int doWork = 1;
+int stopped = 0;
 
 void setup() 
   {
@@ -23,6 +25,7 @@ void setup()
   
   Wire.begin(11);                // join i2c bus with address #8
   Wire.onRequest(requestEvent); // register event
+  Wire.onReceive(receiveEvent); // register event
   
   int left_right_distance_delta = 0;
   int turn_direction = 0;
@@ -106,13 +109,18 @@ bool disregard_invalid_data() {
   bool disregard = false;
   int i;
   for (i = 0; i < 3; i++) {
-    if (tavolsag[i] < 250) {
-      if ( abs(tavolsag[i] - distance_average[i]) > 150 ) {
-        disregard = true;
+    if (tavolsag[i] < 1000){
+      if (tavolsag[i] < 250) {
+        if ( abs(tavolsag[i] - distance_average[i]) > 150 ) {          
+          distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
+          return true;
+        }
+        distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
+        distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
+      } else {
+        
+        distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
       }
-      distance_average[i] = tavolsag[i];// (distance_average[i] + tavolsag[i]) / 2;
-    } else {
-      tavolsag[i] = 250;
     }
   }
   return disregard;
@@ -145,7 +153,7 @@ void multiplexed_reading(){
 void decide(int* turn_direction, unsigned int* turn_intensity) {
   *turn_intensity = 255;
   
-  if (tavolsag[1] > 25) {     // ha van elore hely
+  if (tavolsag[1] > 40){     // ha van elore hely
     if (tavolsag[0] < 20) {   // balra 10nel kozelebb
       *turn_direction = 1;
     }
@@ -160,46 +168,61 @@ void decide(int* turn_direction, unsigned int* turn_intensity) {
         else{
           if (tavolsag[0] > tavolsag[2]){    //nem surgos, de balra kozelebb van
             *turn_direction = -1;       // balra kanyarodik
-            *turn_intensity = 180;
+            *turn_intensity = 200;
           }else{                              //nem surgos de jobbra kozelebb van
             *turn_direction = 1;          //kulonben jobbra 
-            *turn_intensity = 180;
+            *turn_intensity = 200;
           }
         }
       }
-
     }
+    
   }else { // elore nincs hely
-    *turn_direction = -2;    //kozepet allitok be es majd hatramegyek az applynal
+    if (tavolsag[0] > tavolsag[2]){    //nem surgos, de balra kozelebb van
+            *turn_direction = -1;       // balra kanyarodik
+    }else{                              //nem surgos de jobbra kozelebb van
+            *turn_direction = 1;          //kulonben jobbra 
+    }
   }
 }
 
-void apply_decisions(int turn_direction, int turn_intensity){
-  switch (turn_direction) {
-    case -1:
-      digitalWrite(6,LOW);
-      analogWrite(5,turn_intensity);
-      break;
-    case 0:
-      digitalWrite(6,LOW);
-      digitalWrite(5,LOW);          //steering tires look straight
-      break;
-    case 1:
-      analogWrite(6,turn_intensity);
-      digitalWrite(5,LOW);
-      break;
-    case -2:            //no space ahead
-      digitalWrite(6,LOW);
-      digitalWrite(5,LOW);          //steering tires look straight
-      
-//      digitalWrite(11,LOW);
-//      analogWrite(10,40);        //go back for 400 miliseconds
-//      delay(200);
-      digitalWrite(10,LOW);
-      digitalWrite(11,LOW);          //steering tires look straight
+void apply_decisions(int turn_direction, int turn_intensity){ 
 
+  if (doWork == 0){
+    if (stopped==0){
+      analogWrite(11,255);
+      stopped = 1;
+      delay(100);
+    }
+    analogWrite(11,69);
+    digitalWrite(10,LOW);
+ 
+
+    switch (turn_direction) {
+      case -1:
+        digitalWrite(6,LOW);
+        analogWrite(5,turn_intensity);
+        break;
+      case 0:
+        digitalWrite(6,LOW);
+        digitalWrite(5,LOW);          //steering tires look straight
+        break;
+      case 1:
+        analogWrite(6,turn_intensity);
+        digitalWrite(5,LOW);
+        break;
+      case -2:            //no space ahead
+        digitalWrite(6,LOW);
+        digitalWrite(5,LOW);          //steering tires look straight
+  
+    }
+  }else{
+     digitalWrite(10,LOW);
+     digitalWrite(11,LOW);
+     digitalWrite(6,LOW);
+     digitalWrite(5,LOW); 
+     stopped = 0;
   }
-
 }
 
 // function that executes whenever data is requested by master
@@ -215,12 +238,21 @@ void requestEvent() {
   Wire.write(distance_average[2]>>8); // upper byte
 }
 
+void receiveEvent(int howMany) {
+  Serial.println();
+  int x = Wire.read();    // receive byte as an integer
+  
+  Serial.println("RECEIVED:");
+  Serial.println(x);         // print the integer
+  doWork = x;
+}
+
 void loop() {
   multiplexed_reading();
   bool disregard = disregard_invalid_data();
   if (!disregard) {
-    //decide(&turn_direction, &turn_intensity);
-    //apply_decisions(turn_direction, turn_intensity);
+    decide(&turn_direction, &turn_intensity);
+    apply_decisions(turn_direction, turn_intensity);
     
   } else {
     Serial.println("DISREGARDED DATA");

@@ -175,6 +175,21 @@ int connect_to_wifi(char *inputSSID, char *inputPassword) {
   return -1;
 }
 
+void sendMessageToArduino(String message){
+  byte x;
+  if (message.equals("work"))            //if we got the command to work, we send a 0
+      x = 0;             
+  else
+    if (message.equals("stop"))          //if we got a command to stop, we send a 1
+      x = 1;
+    
+  
+  Wire.beginTransmission(11); // transmit to device #11
+  Wire.write(x);              // sends one byte
+  Wire.endTransmission();    // stop transmitting
+}
+
+
 void send_data(String url) {
   char charBuf[15];
   serverAddress.toCharArray(charBuf, 15); 
@@ -193,8 +208,11 @@ void send_data(String url) {
           while(clientToServer.available()){
           String line = clientToServer.readStringUntil('\r');
             if (line.equals("\n")){
-              line = clientToServer.readStringUntil('\r');  
-              Serial.println(line);
+              line = clientToServer.readStringUntil('\r');              
+              line.trim();
+              if (line.equals("work") || line.equals("stop")){
+                sendMessageToArduino(line); 
+              }
             }
           }
         //delay(80);
