@@ -12,9 +12,9 @@ router.get('/', (req, res) => {
 });
 
 var readings = {
-    "left": 30,
-    "center": 60,
-    "right": 90,
+    "left": 0,
+    "center": 0,
+    "right": 0,
 }
 var url_parts;
 var param;

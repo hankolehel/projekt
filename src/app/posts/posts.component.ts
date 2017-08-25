@@ -14,13 +14,20 @@ export class PostsComponent implements OnInit {
 
  public radarChartLabels:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
  public distances:any = [60,80,30];
-
+/*
    public radarChartData:any = [
-     {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 60, 60], label: 'Left'},
+     {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 60], label: 'Left'},
      {data: [80, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 80], label: 'Middle'},
      {data: [0, 30, 30, 30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Right'}
 
    ];
+   */
+      public radarChartData:any = [
+        {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Left'},
+        {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Middle'},
+        {data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], label: 'Right'}
+
+      ];
    public radarChartType:string = 'radar';
 
   public radarChartOptions:any = {

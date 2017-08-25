@@ -9,8 +9,8 @@ unsigned int timerertek;
 double tavolsag[] = {0, 0, 0};
 int echo[4] = {4, 14, 16};
 int trigger[4] = {0, 12, 5};
-int B = 2;
-int A = 3;
+int multiplex_B = 2;
+int multiplex_A = 3;
 int trigger_common = 7;
 int echo_common = 8;
 char url[50];
@@ -34,8 +34,8 @@ void setup()
   Serial.println("Initializing trigger/echo pins");
     // put your setup code here, to run once:
   Serial.println("Setting pins");
-  pinMode(B, OUTPUT);     //B
-  pinMode(A, OUTPUT);     //A
+  pinMode(multiplex_B, OUTPUT);     //B
+  pinMode(multiplex_A, OUTPUT);     //A
 
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);  
@@ -70,29 +70,20 @@ void read_sensor(int sensorNumber)
       //10 us is the trigger pulse
       digitalWrite(trigger_common, LOW);  
       
-      value = 0;
-      //varom amig az echon 1-est latok
-  
-      timerertek = 0;
-  
-      while (value != 1)
+      value = 0;                                  //waiting for logical 1 on this variable   
+      while (value != 1)                          //initial pulse, we start measuring after
         value = digitalRead(echo_common);
  
-      
-      timerertek = 0;
+      timerertek = 0;                             //counter measuring time
       while ((value != 0)&&(timerertek <= 40000))
       {
         value = digitalRead(echo_common);
         timerertek++;
         delayMicroseconds(1);
       }
-
-
       if (timerertek>40000){
         Serial.println("reached over");
       }
-  
-      //if (timerertek==40000)
       
       //we calibrated this with measurements
       tavolsag[sensorNumber] = timerertek * 0.0786;
@@ -128,26 +119,23 @@ bool disregard_invalid_data() {
 
 void multiplexed_reading(){
  //Serial.print("Left: ");
- digitalWrite(A, LOW);
- digitalWrite(B, LOW);
+ digitalWrite(multiplex_A, LOW);
+ digitalWrite(multiplex_B, LOW);
  read_sensor(0);
  output_sensors(0);
 
-
  //Serial.print("Center: ");
- digitalWrite(A, LOW);
- digitalWrite(B, HIGH);
+ digitalWrite(multiplex_A, LOW);
+ digitalWrite(multiplex_B, HIGH);
  read_sensor(1);
  output_sensors(1);
 
-
  //Serial.print("Right: ");
- digitalWrite(A, HIGH);
- digitalWrite(B, LOW);
+ digitalWrite(multiplex_A, HIGH);
+ digitalWrite(multiplex_B, LOW);
  read_sensor(2);
  output_sensors(2);
-  Serial.println();  
-  
+ Serial.println();  
 }
 
 void decide(int* turn_direction, unsigned int* turn_intensity) {
@@ -194,9 +182,14 @@ void apply_decisions(int turn_direction, int turn_intensity){
       stopped = 1;
       delay(100);
     }
-    analogWrite(11,69);
+    int turn_mitigation = 0;
+    if (turn_intensity > 200){
+      turn_mitigation = 23;
+    }
+    analogWrite(11,70 + turn_mitigation);
     digitalWrite(10,LOW);
  
+    
 
     switch (turn_direction) {
       case -1:
