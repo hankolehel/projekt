@@ -61,7 +61,9 @@ void setup() {
           if ((line.indexOf("SSID") != -1) && (line.indexOf("password") != -1))  {              //if the request is a POST request
             char formJSON[line.length() + 1];       
             line.toCharArray(formJSON, line.length()+1);
-            json_to_token_list(formJSON, token_list); // Convert JSON String to a Hashmap of Key/Value Pairs
+            
+        // Convert JSON String to a Hashmap of Key/Value Pairs
+            json_to_token_list(formJSON, token_list); 
 
             char *inputSSID =  json_get_value(token_list, (char *)"SSID");
             char *inputPassword = json_get_value(token_list, (char *)"password");
@@ -88,6 +90,7 @@ void setup() {
 
   }
 // at this point we are connected to a wifi and we know the IP address of the server
+
 Wire.begin();             // join i2c bus (address optional for master)
 
 }
@@ -97,9 +100,9 @@ void display_page(WiFiClient client, String text){
     // Return the response
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html");
-    client.println(""); //  do not forget this one
+    client.println(""); //  empty line to signal start of body
+    
     client.println("<html>");
-  
       client.println("<h3>SSID:</h3>");
         client.println("<input type='text' id='SSID' required><br>");  
       client.println("<h3>Password:</h3>");
@@ -108,23 +111,24 @@ void display_page(WiFiClient client, String text){
         client.println("<input type='text' id='serverAddress' required><br><br>");
       client.println("<input type='button' name='submit' value='Submit' onclick='return sendForm()' />");
     client.println("<h2 id='StatusHeader'>"+ text + "</h2>");
+    
     client.println("<script>");
     client.println("function isValid(text) {return text.match(/^[^\"<>&\\{}]*$/);}");
     client.println("function sendForm(){var ssid = document.getElementById('SSID').value;");
     client.println("var password = document.getElementById('password').value;");
     client.println("var serverAddress = document.getElementById('serverAddress').value;");
-    client.println("if(isValid(ssid) && isValid(password) && serverAddress.match(/^(?:(?:2[0-4]\\d|25[0-5]|1\\d{2}|[1-9]?\\d)\\.){3}(?:2[0-4]\\d|25[0-5]|1\\d{2}|[1-9]?\\d)$/)){");
+    client.println("if(isValid(ssid) && isValid(password) && serverAddress.match"
+        "(/^(?:(?:2[0-4]\\d|25[0-5]|1\\d{2}|[1-9]?\\d)\\.){3}(?:2[0-4]\\d|25[0-5]|1\\d{2}|[1-9]?\\d)$/)){");
     client.println("document.getElementById('StatusHeader').innerHTML = 'Working on it..';");
     client.println("var xmlhttp = new XMLHttpRequest();");
     client.println("var url = 'URLTEST';");
-    client.println(" var params = '{\"SSID\" : \"'+ssid +'\" , \"password\" : \"'+ password  +'\" , \"serverAddress\" : \"' + serverAddress +'\"}';");
+    client.println("var params = '{\"SSID\" : \"'+ssid +'\" , \"password\" : \"'+ password  +'\" , \"serverAddress\" : \"' + serverAddress +'\"}';");
     client.println("xmlhttp.open(\"POST\", url, true);");
     client.println("xmlhttp.send(params);");
     client.println("}else{document.getElementById('StatusHeader').innerHTML = 'Illegal character found in text input.'; }  ");
     client.println("}");
      client.println("</script>");
     client.println("</html>");
-   
   
     Serial.println("Client disonnected");
     Serial.println("");
@@ -136,9 +140,6 @@ int connect_to_wifi(char *inputSSID, char *inputPassword) {
   WiFi.disconnect();
   WiFi.mode(WIFI_STA);
   delay(100);
-  
-  Serial.println();
-  Serial.println();
   Serial.print("Connecting to ");
   Serial.println(inputSSID);
 
@@ -152,11 +153,7 @@ int connect_to_wifi(char *inputSSID, char *inputPassword) {
       WiFi.mode(WIFI_AP_STA);
       delay(100);
       WiFi.softAP(ssid, password);             // Start the access point
-      Serial.print("Access Point \"");
-      Serial.print(ssid);
-      Serial.println("\" started");
-    
-      Serial.print("IP address:\t");
+      Serial.print("Access Point Restarted");
       Serial.println(WiFi.softAPIP());   
       break;
     }
@@ -166,7 +163,6 @@ int connect_to_wifi(char *inputSSID, char *inputPassword) {
   };
   if(counter < 20){
     systemMessage = "Connection successful!";
-    Serial.println("");
     Serial.println("WiFi connected");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP()); 
@@ -183,7 +179,6 @@ void sendMessageToArduino(String message){
     if (message.equals("stop"))          //if we got a command to stop, we send a 1
       x = 1;
     
-  
   Wire.beginTransmission(11); // transmit to device #11
   Wire.write(x);              // sends one byte
   Wire.endTransmission();    // stop transmitting
@@ -197,24 +192,22 @@ void send_data(String url) {
   if (clientToServer.connect(charBuf, 3000)) {
     if (clientToServer) {
       if (clientToServer.connected()) {
-        //String url = "/api/store?left=" + String(left) + "&center=" + String(center) + "&right=" + String(right) + "";
         
         clientToServer.print(String("GET ") + url + " HTTP/1.1\r\n" +
                      "Host:  "+String(serverAddress)+"\r\n" +
                      "Connection: close\r\n\r\n");
 
         Serial.print("Response:");
-
-          while(clientToServer.available()){
-          String line = clientToServer.readStringUntil('\r');
-            if (line.equals("\n")){
-              line = clientToServer.readStringUntil('\r');              
-              line.trim();
-              if (line.equals("work") || line.equals("stop")){
-                sendMessageToArduino(line); 
-              }
+        while(clientToServer.available()){
+        String line = clientToServer.readStringUntil('\r');
+          if (line.equals("\n")){
+            line = clientToServer.readStringUntil('\r');              
+            line.trim();
+            if (line.equals("work") || line.equals("stop")){
+              sendMessageToArduino(line); 
             }
           }
+        }
         //delay(80);
       }
     }
@@ -246,10 +239,12 @@ void loop() {
     Serial.println("");
   }
 
-  url = "/api/store?left=" + String(left) + "&center=" + String(center) + "&right=" + String(right) + "";
+  url = "/api/store?left=" + String(left) + 
+            +"&center=" + String(center) + 
+            +"&right=" + String(right) + "";
   //Serial.println(url);
   send_data(url);
-  delay(200);
+  delay(160);
 }
 
 

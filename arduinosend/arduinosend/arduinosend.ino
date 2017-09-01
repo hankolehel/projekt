@@ -101,15 +101,13 @@ bool disregard_invalid_data() {
   int i;
   for (i = 0; i < 3; i++) {
     if (tavolsag[i] < 1000){
-      if (tavolsag[i] < 250) {
+      if (tavolsag[i] < 300) {
         if ( abs(tavolsag[i] - distance_average[i]) > 150 ) {          
           distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
-          return true;
+          disregard = true;
         }
-        distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
-        distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
+        distance_average[i] = (((distance_average[i] + tavolsag[i]) / 2) + tavolsag[i]) / 2;
       } else {
-        
         distance_average[i] = (distance_average[i] + tavolsag[i]) / 2;
       }
     }
@@ -141,41 +139,39 @@ void multiplexed_reading(){
 void decide(int* turn_direction, unsigned int* turn_intensity) {
   *turn_intensity = 255;
   
-  if (tavolsag[1] > 40){     // ha van elore hely
-    if (tavolsag[0] < 20) {   // balra 10nel kozelebb
+  if (tavolsag[1] > 40){        
+    if (tavolsag[0] < 20) {       
       *turn_direction = 1;
     }
     else {
-      if (tavolsag[2] < 20){ // jobbra 10 nel kozelebb
+      if (tavolsag[2] < 20){ 
         *turn_direction = -1;
       }
-      else {                    //ha balra sem surgos es jobbra sem kanyarodni  
-        
-        if (tavolsag[0] > 40 && tavolsag[2] > 40)           //ha mindket iranyban 50+, tarthatja egyenesen
+      else {   
+                             
+        if (tavolsag[0] > 40 && tavolsag[2] > 40)           
           *turn_direction = 0;
         else{
-          if (tavolsag[0] > tavolsag[2]){    //nem surgos, de balra kozelebb van
-            *turn_direction = -1;       // balra kanyarodik
+          if (tavolsag[0] > tavolsag[2]){    
+            *turn_direction = -1;       
             *turn_intensity = 200;
-          }else{                              //nem surgos de jobbra kozelebb van
-            *turn_direction = 1;          //kulonben jobbra 
+          }else{                              
+            *turn_direction = 1;          
             *turn_intensity = 200;
           }
         }
       }
     }
-    
-  }else { // elore nincs hely
-    if (tavolsag[0] > tavolsag[2]){    //nem surgos, de balra kozelebb van
-            *turn_direction = -1;       // balra kanyarodik
-    }else{                              //nem surgos de jobbra kozelebb van
-            *turn_direction = 1;          //kulonben jobbra 
+  }else {
+    if (tavolsag[0] > tavolsag[2]){    
+            *turn_direction = -1;       
+    }else{                              
+            *turn_direction = 1;          
     }
   }
 }
 
 void apply_decisions(int turn_direction, int turn_intensity){ 
-
   if (doWork == 0){
     if (stopped==0){
       analogWrite(11,255);
@@ -187,9 +183,7 @@ void apply_decisions(int turn_direction, int turn_intensity){
       turn_mitigation = 23;
     }
     analogWrite(11,70 + turn_mitigation);
-    digitalWrite(10,LOW);
- 
-    
+    digitalWrite(10,LOW);   
 
     switch (turn_direction) {
       case -1:
@@ -198,16 +192,12 @@ void apply_decisions(int turn_direction, int turn_intensity){
         break;
       case 0:
         digitalWrite(6,LOW);
-        digitalWrite(5,LOW);          //steering tires look straight
+        digitalWrite(5,LOW);          
         break;
       case 1:
         analogWrite(6,turn_intensity);
         digitalWrite(5,LOW);
         break;
-      case -2:            //no space ahead
-        digitalWrite(6,LOW);
-        digitalWrite(5,LOW);          //steering tires look straight
-  
     }
   }else{
      digitalWrite(10,LOW);
@@ -232,11 +222,7 @@ void requestEvent() {
 }
 
 void receiveEvent(int howMany) {
-  Serial.println();
   int x = Wire.read();    // receive byte as an integer
-  
-  Serial.println("RECEIVED:");
-  Serial.println(x);         // print the integer
   doWork = x;
 }
 
@@ -248,14 +234,7 @@ void loop() {
     apply_decisions(turn_direction, turn_intensity);
     
   } else {
-    Serial.println("DISREGARDED DATA");
+    Serial.println("Disregarded data");
   }
   delay(150);
-//digitalWrite(5, LOW);
-//for (int i = 0; i< 255; i+=30){
-//  analogWrite(6,220);
-//  Serial.println(String(i));
-//  delay(3000);
-//}
-
 }

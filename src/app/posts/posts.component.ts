@@ -73,7 +73,9 @@ export class PostsComponent implements OnInit {
          this.radarChartData = clone;
    }
 
-   public collectStoredData(carWorkingToggle?: boolean):void{               //also sends commands to the server (car's on/off state), this gets separated at service level
+   //also sends commands to the server (car's on/off state), this gets separated at service level
+
+   public collectStoredData(carWorkingToggle?: boolean):void{
               this.postsService.getCurrentData(carWorkingToggle).subscribe(posts => {
                console.log(posts);
                this.distances[0] = posts.left;

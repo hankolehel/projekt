@@ -56,7 +56,7 @@ router.get('/store', (req, res) => {              //stores the incoming readings
   }
 });
 
-// Get all posts
+
 router.get('/collect', (req, res) => {            //sends the readings back to the frontend
   if (Object.keys(req.query).length !== 0){
     if (req.query['carState']=='true'){
